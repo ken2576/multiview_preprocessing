@@ -202,7 +202,7 @@ if __name__ == '__main__':
     parser.add_argument('--prior_path', type=str,
                         help='path to prior pose file')
     parser.add_argument('--extension', type=str,
-                        default='.png',
+                        default='.jpg',
                         help='image extension to use')
 
     args = parser.parse_args()

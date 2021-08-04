@@ -27,23 +27,23 @@ python undistort_opencv.py \
 
 echo "Processing train data..."
 python undistort_opencv.py \
-    --path $1/test/1080p/2_7/ \
-    --out_folder $2/test/1080p/2_7/ \
+    --path $1/train/1080p/2_7/ \
+    --out_folder $2/train/1080p/2_7/ \
     --param_path calib_1080.pkl \
     --img_wh 960 540
 python undistort_opencv.py \
-    --path $1/test/1080p/2_8/ \
-    --out_folder $2/test/1080p/2_8/ \
+    --path $1/train/1080p/2_8/ \
+    --out_folder $2/train/1080p/2_8/ \
     --param_path calib_1080.pkl \
     --img_wh 960 540
 python undistort_opencv.py \
-    --path $1/test/1080p/2_10/ \
-    --out_folder $2/test/1080p/2_10/ \
+    --path $1/train/1080p/2_10/ \
+    --out_folder $2/train/1080p/2_10/ \
     --param_path calib_1080.pkl \
     --img_wh 960 540
 python undistort_opencv.py \
-    --path $1/test/1080p/2_24/ \
-    --out_folder $2/test/1080p/2_24/ \
+    --path $1/train/1080p/2_24/ \
+    --out_folder $2/train/1080p/2_24/ \
     --param_path calib_1080.pkl \
     --img_wh 960 540
 python undistort_opencv.py \

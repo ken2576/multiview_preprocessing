@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-colmap = 'C:\\Users\\Ken\\Downloads\\COLMAP-dev-windows\\COLMAP.bat'
+colmap = 'colmap'
 
 # $ DATASET_PATH=/path/to/dataset
 
