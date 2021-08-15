@@ -38,6 +38,74 @@
 
 7. Collect the poses with ```sh collect_poses.sh [output_directory] [compressed_output_directory]```
 
+### Dataset usage
+
+The camera poses are stored in [LLFF](https://github.com/Fyusion/LLFF) convention in ```npy``` format.
+
+E.g. camera poses are stored in shape ```(#views, 17)``` where the camera parameters are flattened.
+
+It can be converted to intrinsic and world-to-camera matrix with:
+
+```python
+import numpy as np
+
+def pose2mat(pose):
+    """Convert pose matrix (3x5) to extrinsic matrix (4x4) and
+       intrinsic matrix (3x3)
+    
+    Args:
+        pose: 3x5 pose matrix
+    Returns:
+        Extrinsic matrix (4x4) and intrinsic matrix (3x3)
+    """
+    extrinsic = np.eye(4)
+    extrinsic[:3, :] = pose[:, :4]
+    h, w, focal_length = pose[:, 4]
+    intrinsic = np.array([[focal_length, 0, w/2],
+                        [0, focal_length, h/2],
+                        [0,            0,   1]])
+
+    return extrinsic, intrinsic
+
+def convert_llff(pose):
+    """Convert LLFF poses to OpenCV convention (w2c extrinsic and hwf)
+    """
+    hwf = pose[:3, 4:]
+
+    ext = np.eye(4)
+    ext[:3, :4] = pose[:3, :4]
+    mat = np.linalg.inv(ext)
+    mat = mat[[1, 0, 2]]
+    mat[2] = -mat[2]
+    mat[:, 2] = -mat[:, 2]
+
+    return np.concatenate([mat, hwf], -1)
+
+input_poses = np.load('scene000_pb.npy')
+pose = input_poses[0, :-2].reshape([3, 5])
+bounds = input_poses[0, -2:]
+w2c, k = pose2mat(convert_llff(pose))
+print(w2c.shape)
+print(k.shape)
+
+```
+
+The image data after compression is stored in ```h5``` format with keys:
+
+```rgb```: original RGB frames in shape ```(#views, #frames, height, width, 3)```
+
+```fg_rgb```: processed foreground RGB frames in shape ```(#views, #frames, height, width, 4)```
+
+```bg_rgb```: median-filtered background RGB images in shape ```(#views, height, width, 3)```
+
+
+Example script:
+```python
+import h5py
+with h5py.File('scene000.h5', 'r') as hf:
+    rgb = hf['rgb'] # (#views, #frames, height, width, 3)
+
+```
 
 ### Troubleshooting
 
