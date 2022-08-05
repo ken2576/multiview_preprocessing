@@ -43,18 +43,22 @@ def pose2mat(pose):
     return extrinsic, intrinsic
 
 def convert_llff(pose):
-    """Convert LLFF poses to PyTorch convention (w2c extrinsic and hwf)
+    """Convert LLFF poses to OpenCV convention (w2c extrinsic and hwf)
     """
-    hwf = pose[:3, 4:]
+    hwf = pose[:3, 4:] 
 
     ext = np.eye(4)
-    ext[:3, :4] = pose[:3, :4]
-    mat = np.linalg.inv(ext)
-    mat = mat[[1, 0, 2]]
-    mat[2] = -mat[2]
-    mat[:, 2] = -mat[:, 2]
 
-    return np.concatenate([mat, hwf], -1)
+    ext[:3, :4] = pose[:3, :4]
+
+    ext = np.concatenate([ext[:, 1:2], 
+                        ext[:, 0:1], 
+                        -ext[:, 2:3], 
+                        ext[:, 3:4]], axis=1)
+
+    mat = np.linalg.inv(ext)
+
+    return np.concatenate([mat[:3, :4], hwf], -1)
 
 def load_poses(filename):
     

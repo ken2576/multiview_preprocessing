@@ -130,15 +130,20 @@ def pose2mat(pose):
 def convert_llff(pose):
     """Convert LLFF poses to OpenCV convention (w2c extrinsic and hwf)
     """
-    hwf = pose[:3, 4:]
+    hwf = pose[:3, 4:] 
 
     ext = np.eye(4)
+
     ext[:3, :4] = pose[:3, :4]
-    ext = ext[:, [1, 0, 2, 3]]
-    ext[:, 2] *= -1
+
+    ext = np.concatenate([ext[:, 1:2], 
+                        ext[:, 0:1], 
+                        -ext[:, 2:3], 
+                        ext[:, 3:4]], axis=1)
+
     mat = np.linalg.inv(ext)
 
-    return np.concatenate([mat[:3], hwf], -1)
+    return np.concatenate([mat[:3, :4], hwf], -1)
 
 def proc_poses_bounds(input_poses):
     poses = input_poses[:, :-2].reshape([-1, 3, 5])
